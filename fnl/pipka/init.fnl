@@ -1,10 +1,11 @@
-(fn open []
-  (let [bufnr (vim.api.nvim_create_buf false true)
-        total-width (math.floor (/ vim.o.columns 2.5))]
-    (vim.api.nvim_open_win bufnr false {:width total-width
-                                        :height 12
-                                        :split :left})))
+(local create-user-command (. (require :pipka.utils) :create-user-command))
 
-(open)
+(var options {})
 
-{:open open}
+(create-user-command :Pipka (fn []
+   ((require :pipka.pipka))) {})
+
+(fn setup [config]
+  (set options config))
+
+{: setup}
