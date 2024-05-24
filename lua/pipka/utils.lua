@@ -13,4 +13,16 @@ end
 local function create_user_command(name, action, options)
   return vim.api.nvim_create_user_command(name, action, options)
 end
-return {notify = notify, ["create-user-command"] = create_user_command}
+local default_keymap_options = {noremap = true, silent = true}
+local function set_keymap_options(opts)
+  return vim.tbl_deep_extend("force", default_keymap_options, (opts or {}))
+end
+local function keymap(mode, lhs, rhs, opts)
+  return vim.keymap.set(mode, lhs, rhs, set_keymap_options(opts))
+end
+local function buf_keymap(buffer, mode, lhs, rhs, opts)
+  local options = (opts or {})
+  options.buffer = buffer
+  return keymap(mode, lhs, rhs, options)
+end
+return {notify = notify, ["create-user-command"] = create_user_command, keymap = keymap, ["buf-keymap"] = buf_keymap}

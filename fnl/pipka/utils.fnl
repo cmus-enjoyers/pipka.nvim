@@ -12,5 +12,21 @@
 (fn create-user-command [name action options]
   (vim.api.nvim_create_user_command name action options))
 
+(local default-keymap-options {:noremap true
+                               :silent true})
+
+(fn set-keymap-options [opts]
+  (vim.tbl_deep_extend "force" default-keymap-options (or opts {})))
+
+(fn keymap [mode lhs rhs opts]
+    (vim.keymap.set mode lhs rhs (set-keymap-options opts)))
+
+(fn buf-keymap [buffer mode lhs rhs opts]
+  (let [options (or opts {})]
+    (set options.buffer buffer)
+    (keymap mode lhs rhs options)))
+
 {: notify
- : create-user-command}
+ : create-user-command
+ : keymap
+ : buf-keymap}
