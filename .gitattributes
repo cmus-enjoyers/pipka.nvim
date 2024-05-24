@@ -1,0 +1,2 @@
+lua/**/*.lua linguist-generated
+lua/pipka/pipka.lua linguist-vendored
