@@ -12,24 +12,35 @@ end
 local function set_buffer_name(bufnr, name)
   return vim.api.nvim_buf_set_name(bufnr, name)
 end
+local function function_3f(thing)
+  return (type(thing) == "function")
+end
+local function get_pos(bufnr)
+  return vim.fn.getpos(bufnr)
+end
 local pipka_keymaps
-local function _2_()
-  return notify("+ was pressed")
+local function _2_(bufnr)
+  notify("+ was pressed")
+  return notify(get_pos(bufnr))
 end
 pipka_keymaps = {["+"] = {mode = {"n", "i"}, rhs = _2_}, q = {mode = "n", rhs = "<cmd>close<cr>"}}
+local function set_keymaps(bufnr, keymaps, options)
+  for key, options0 in pairs(keymaps) do
+    buf_keymap(bufnr, options0.mode, key, options0.rhs, options0.options)
+  end
+  return nil
+end
 local function open(options)
   local bufnr = vim.api.nvim_create_buf(false, true)
   local total_width = math.floor((vim.o.columns / 2.5))
-  set_buffer_name(bufnr, "pipka")
+  set_buffer_name(bufnr, "Pipka")
   vim.api.nvim_open_win(bufnr, true, {width = total_width, height = 12, split = (options.split or "below")})
-  for key, options0 in pairs(pipka_keymaps) do
-    buf_keymap(bufnr, options0.mode, key, options0.rhs, options0.options)
-  end
+  set_keymaps(bufnr, pipka_keymaps, options)
   put_lsps(bufnr)
   local augroup = vim.api.nvim_create_augroup("Pipka", {})
   local function _3_()
     return notify("BufWriteCmd")
   end
-  return vim.api.nvim_create_autocmd("BufWriteCmd", {buffer = bufnr, augroup = augroup, callback = _3_})
+  return vim.api.nvim_create_autocmd("BufWriteCmd", {buffer = bufnr, group = augroup, callback = _3_})
 end
 return open

@@ -2,7 +2,7 @@
 local create_user_command = (require("pipka.utils"))["create-user-command"]
 local options = {}
 local function _1_()
-  return require("pipka.pipka")()
+  return require("pipka.pipka")(options)
 end
 create_user_command("Pipka", _1_, {})
 local function setup(config)
