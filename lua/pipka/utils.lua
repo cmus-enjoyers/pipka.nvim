@@ -28,4 +28,12 @@ end
 local function get_user_defined_options(options)
   return (getmetatable(options) or options)
 end
-return {notify = notify, ["create-user-command"] = create_user_command, keymap = keymap, ["buf-keymap"] = buf_keymap, ["get-user-defined-options"] = get_user_defined_options}
+local function get_buffer_by_name(name)
+  local bufnr = vim.fn.bufnr(name, false)
+  if (bufnr ~= -1) then
+    return bufnr
+  else
+    return nil
+  end
+end
+return {notify = notify, ["create-user-command"] = create_user_command, keymap = keymap, ["buf-keymap"] = buf_keymap, ["get-user-defined-options"] = get_user_defined_options, ["get-buffer-by-name"] = get_buffer_by_name}

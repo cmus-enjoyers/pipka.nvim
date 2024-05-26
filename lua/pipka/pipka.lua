@@ -2,6 +2,7 @@
 local _local_1_ = require("pipka.utils")
 local notify = _local_1_["notify"]
 local buf_keymap = _local_1_["buf-keymap"]
+local get_buffer_by_name = _local_1_["get-buffer-by-name"]
 local buf_title = "Pipka"
 local function buf_set_lines(buffer, start, _end, strict_indexing, replacement)
   return vim.api.nvim_buf_set_lines(buffer, start, _end, strict_indexing, replacement)
@@ -42,8 +43,8 @@ local function create_buffer(name, listed, scratch)
   return bufnr
 end
 local function get_buf_or_create(name)
-  local bufnr = vim.fn.bufnr(name, false)
-  if (bufnr == -1) then
+  local bufnr = get_buffer_by_name(name)
+  if not bufnr then
     return create_buffer(name)
   else
     return bufnr

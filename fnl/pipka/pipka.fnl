@@ -1,4 +1,4 @@
-(local {: notify : buf-keymap} (require :pipka.utils))
+(local {: notify : buf-keymap : get-buffer-by-name} (require :pipka.utils))
 
 (local buf-title :Pipka)
 
@@ -39,8 +39,8 @@
     bufnr))
 
 (fn get-buf-or-create [name]
-  (let [bufnr (vim.fn.bufnr name false)]
-    (if (= bufnr -1) (create-buffer name)
+  (let [bufnr (get-buffer-by-name name)]
+    (if (not bufnr) (create-buffer name)
                      bufnr)))
 
 (fn open [options]

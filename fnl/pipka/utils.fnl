@@ -29,8 +29,14 @@
 (fn get-user-defined-options [options]
   (or (getmetatable options) options))
 
+(fn get-buffer-by-name [name]
+  (let [bufnr (vim.fn.bufnr name false)]
+    (when (~= bufnr -1)
+      bufnr)))
+
 {: notify
  : create-user-command
  : keymap
  : buf-keymap
- : get-user-defined-options}
+ : get-user-defined-options
+ : get-buffer-by-name}
