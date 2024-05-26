@@ -26,7 +26,11 @@
     (set options.buffer buffer)
     (keymap mode lhs rhs options)))
 
+(fn get-user-defined-options [options]
+  (or (getmetatable options) options))
+
 {: notify
  : create-user-command
  : keymap
- : buf-keymap}
+ : buf-keymap
+ : get-user-defined-options}

@@ -25,4 +25,7 @@ local function buf_keymap(buffer, mode, lhs, rhs, opts)
   options.buffer = buffer
   return keymap(mode, lhs, rhs, options)
 end
-return {notify = notify, ["create-user-command"] = create_user_command, keymap = keymap, ["buf-keymap"] = buf_keymap}
+local function get_user_defined_options(options)
+  return (getmetatable(options) or options)
+end
+return {notify = notify, ["create-user-command"] = create_user_command, keymap = keymap, ["buf-keymap"] = buf_keymap, ["get-user-defined-options"] = get_user_defined_options}
