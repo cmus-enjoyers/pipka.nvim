@@ -29,11 +29,13 @@ end
 local pipka_keymaps = {["+"] = {mode = {"n", "i"}, rhs = add_lsp}, q = {mode = "n", rhs = "<cmd>close<cr>"}}
 local function set_keymaps(bufnr, keymaps, options)
   for key, options0 in pairs(keymaps) do
+    local _3_
     if function_3f(options0.rhs) then
-      buf_keymap(bufnr, options0.mode, key, options0.rhs(bufnr, options0), options0.options)
+      _3_ = options0.rhs(bufnr, options0)
     else
+      _3_ = options0.rhs
     end
-    buf_keymap(bufnr, options0.mode, key, options0.rhs, options0.options)
+    buf_keymap(bufnr, options0.mode, key, _3_, options0.options)
   end
   return nil
 end
@@ -58,9 +60,9 @@ local function open(options)
   set_keymaps(bufnr, pipka_keymaps, options)
   put_lsps(bufnr)
   local augroup = vim.api.nvim_create_augroup("Pipka", {})
-  local function _5_()
+  local function _6_()
     return notify("BufWriteCmd")
   end
-  return vim.api.nvim_create_autocmd("BufWriteCmd", {buffer = bufnr, group = augroup, callback = _5_})
+  return vim.api.nvim_create_autocmd("BufWriteCmd", {buffer = bufnr, group = augroup, callback = _6_})
 end
 return open

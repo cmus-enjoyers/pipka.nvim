@@ -27,9 +27,11 @@
 
 (fn set-keymaps [bufnr keymaps options] 
   (each [key options (pairs keymaps)]
-    (when (function? options.rhs)
-      (buf-keymap bufnr options.mode key (options.rhs bufnr options) options.options))
-    (buf-keymap bufnr options.mode key options.rhs options.options)))
+    (buf-keymap bufnr options.mode key 
+                (if (function? options.rhs) 
+                    (options.rhs bufnr options)
+                    options.rhs) 
+                options.options)))
 
 (fn create-buffer [name listed scratch]
   (let [bufnr (vim.api.nvim_create_buf
@@ -41,7 +43,7 @@
 (fn get-buf-or-create [name]
   (let [bufnr (get-buffer-by-name name)]
     (if (not bufnr) (create-buffer name)
-                     bufnr)))
+        bufnr)))
 
 (fn open [options]
   (let [bufnr (get-buf-or-create buf-title)
