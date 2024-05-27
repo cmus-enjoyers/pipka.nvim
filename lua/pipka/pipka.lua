@@ -17,12 +17,9 @@ end
 local function function_3f(thing)
   return (type(thing) == "function")
 end
-local function get_current_line()
-  return notify(vim.fn.getpos("."))
-end
 local function add_lsp(bufnr, options)
   local function _2_()
-    return get_current_line()
+    return notify(("Igor " .. tostring(bufnr)))
   end
   return _2_
 end
@@ -40,7 +37,7 @@ local function set_keymaps(bufnr, keymaps, options)
   return nil
 end
 local function create_buffer(name, listed, scratch)
-  local bufnr = vim.api.nvim_create_buf((listed or true), (scratch or false))
+  local bufnr = vim.api.nvim_create_buf((listed or false), (scratch or true))
   set_buffer_name(bufnr, name)
   return bufnr
 end
@@ -58,6 +55,7 @@ local function open(options)
   set_buffer_name(bufnr, buf_title)
   vim.api.nvim_open_win(bufnr, true, {width = total_width, height = 12, split = (options.split or "below")})
   set_keymaps(bufnr, pipka_keymaps, options)
+  vim.api.nvim_buf_add_highlight(bufnr, vim.api.nvim_create_namespace("PipkaComment"), "PipkaComment", 0, 1, -1)
   put_lsps(bufnr)
   local augroup = vim.api.nvim_create_augroup("Pipka", {})
   local function _6_()

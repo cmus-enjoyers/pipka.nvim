@@ -15,12 +15,9 @@
 (fn function? [thing]
   (= (type thing) "function"))
 
-(fn get-current-line []
-  (notify (vim.fn.getpos ".")))
-
 (fn add-lsp [bufnr options]
   (fn []
-    (get-current-line)))
+    (notify (.. "Igor " (tostring bufnr)))))
 
 (local pipka-keymaps {:+ {:mode [:n :i] :rhs add-lsp}
                       :q {:mode :n :rhs :<cmd>close<cr>}})
@@ -35,8 +32,8 @@
 
 (fn create-buffer [name listed scratch]
   (let [bufnr (vim.api.nvim_create_buf
-                (or listed true)
-                (or scratch false))]
+                (or listed false)
+                (or scratch true))]
     (set-buffer-name bufnr name)
     bufnr))
 
@@ -53,6 +50,8 @@
                                        :height 12
                                        :split (or options.split :below)})
     (set-keymaps bufnr pipka-keymaps options)
+    (vim.api.nvim_buf_add_highlight bufnr 
+                                    (vim.api.nvim_create_namespace "PipkaComment") "PipkaComment" 0 1 -1)
     (put-lsps bufnr)
     (let [augroup (vim.api.nvim_create_augroup :Pipka {})]
       (vim.api.nvim_create_autocmd :BufWriteCmd {:buffer bufnr
