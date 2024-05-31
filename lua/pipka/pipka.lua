@@ -49,14 +49,18 @@ local function get_buf_or_create(name)
     return bufnr
   end
 end
+local pipka_namespace = vim.api.nvim_create_namespace("pipka")
+local function highlight_non_installed_entry(bufnr, line, col, col_end)
+  return vim.api.nvim_buf_set_extmark(bufnr, pipka_namespace, line, col, {end_col = col_end, hl_group = "@comment"})
+end
 local function open(options)
   local bufnr = get_buf_or_create(buf_title)
   local total_width = math.floor((vim.o.columns / 2.5))
   set_buffer_name(bufnr, buf_title)
   vim.api.nvim_open_win(bufnr, true, {width = total_width, height = 12, split = (options.split or "below")})
   set_keymaps(bufnr, pipka_keymaps, options)
-  vim.api.nvim_buf_add_highlight(bufnr, vim.api.nvim_create_namespace("PipkaComment"), "PipkaComment", 0, 1, -1)
   put_lsps(bufnr)
+  highlight_non_installed_entry(bufnr, 0, 1, 22)
   local augroup = vim.api.nvim_create_augroup("Pipka", {})
   local function _6_()
     return notify("BufWriteCmd")

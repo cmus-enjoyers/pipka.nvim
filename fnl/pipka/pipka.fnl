@@ -42,6 +42,12 @@
     (if (not bufnr) (create-buffer name)
         bufnr)))
 
+(local pipka-namespace (vim.api.nvim_create_namespace :pipka))
+
+(fn highlight-non-installed-entry [bufnr line col col-end]
+  (vim.api.nvim_buf_set_extmark bufnr pipka-namespace line col {:end_col col-end
+                                                                :hl_group "@comment"}))
+
 (fn open [options]
   (let [bufnr (get-buf-or-create buf-title)
         total-width (math.floor (/ vim.o.columns 2.5))]
@@ -50,9 +56,8 @@
                                        :height 12
                                        :split (or options.split :below)})
     (set-keymaps bufnr pipka-keymaps options)
-    (vim.api.nvim_buf_add_highlight bufnr 
-                                    (vim.api.nvim_create_namespace "PipkaComment") "PipkaComment" 0 1 -1)
     (put-lsps bufnr)
+    (highlight-non-installed-entry bufnr 0 1 22)
     (let [augroup (vim.api.nvim_create_augroup :Pipka {})]
       (vim.api.nvim_create_autocmd :BufWriteCmd {:buffer bufnr
                                    :group augroup
